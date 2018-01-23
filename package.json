@@ -1,6 +1,6 @@
 {
   "name": "trcsvjs",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A csv parser that use papaparser and extend its features",
   "author": "drobledom",
   "main": "index.js",
