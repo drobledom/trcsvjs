@@ -1,0 +1,24 @@
+<html>
+
+<head>
+	<meta charset="utf-8"> 
+    
+    <title>trcsvjs test</title>
+    <script type='text/javascript' src='../node_modules/papaparse/papaparse.min.js?'></script>
+	<script type='text/javascript' src='../src/trcsvjs.js?'></script>
+</head>
+<body>
+	echo hello
+</body>
+<input type="file" id="fls">hola
+<button id="bt">pulsa</button>
+
+	<script type="text/javascript">
+		document.getElementById("bt").addEventListener('click',function(){
+			var element = document.getElementById("fls");
+			Trcsvjs.getCsvFromFile(element.files[0],function(err,trcsv){
+				console.log(err,trcsv);
+			})
+		});
+	</script>
+</html>
