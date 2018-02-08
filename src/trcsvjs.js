@@ -4,6 +4,7 @@
 	https://github.com/drobledom/trcsvjs
 	License: MIT
 */
+
 //papa
 if (typeof Papa === 'undefined'){
 	var Papa = require('papaparse');
@@ -270,9 +271,64 @@ if (typeof Papa === 'undefined'){
 		if (typeof config.newline === 'undefined' || config.newline==''){
 			config.newline = this.newline;
 		}
+		//config.encoding = "ISO-8859-1";
 
 		return Papa.unparse(this._csv,config);
 	}
+
+	function encodeUTF16LE(str) {
+	    var out, i, len, c;
+	    var char2, char3;
+
+	    out = "";
+	    len = str.length;
+	    i = 0;
+	    while(i < len) {
+	        c = str.charCodeAt(i++);
+	        var s = str[i-1];
+	        var p=0;
+	        var a = str.charAt(i-1);
+	        switch(c >> 4)
+	        { 
+	          case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+	            // 0xxxxxxx
+	            out += str.charAt(i-1);
+	            p=1;
+	            break;
+	          case 12: case 13:
+	            // 110x xxxx   10xx xxxx
+	            char2 = str.charCodeAt(i++);
+	            out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+	            out += str.charAt(i-1);
+	            p=2;
+	            break;
+	          case 14:
+	            // 1110 xxxx  10xx xxxx  10xx xxxx
+	            char2 = str.charCodeAt(i++);
+	            char3 = str.charCodeAt(i++);
+	            out += String.fromCharCode(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
+	            p=3;
+	            break;
+	          default:
+	            // 0xxxxxxx
+	            out += str.charAt(i-1);
+	            p=4;
+	            break;
+	        }
+	    }
+
+
+	    var byteArray = new Uint8Array(out.length * 2);
+	    for (var i = 0; i < out.length; i++) {
+	    	var c = out.charCodeAt(i);
+	    	var s = out.charAt(i);
+	        byteArray[i*2] = out.charCodeAt(i); // & 0xff;
+	        byteArray[i*2+1] = out.charCodeAt(i) >> 8; // & 0xff;
+	    }
+
+	    return byteArray;
+	}
+
 
 	/**
      * Get actual csv content, creates a local file directly in browser and download it.
@@ -282,9 +338,9 @@ if (typeof Papa === 'undefined'){
     		return '';
     	}
         var text = this.getCsvText(config);
-        var BOM = "\uFEFF"; 
-		text = BOM + text;
-        var objectURL = createObjectURL(new Blob([text], {type: "data:text/csv;charset=utf-8,%EF%BB%BF"}))
+		var textBin = encodeUTF16LE(text);
+		
+        var objectURL = createObjectURL(new Blob([textBin], {type: "data:text/csv;charset=UTF-16LE"}))
 
         var element = document.createElement('a');
         element.setAttribute('href', objectURL);
