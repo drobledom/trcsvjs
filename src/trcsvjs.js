@@ -119,7 +119,7 @@ if (typeof Papa === 'undefined'){
 	 */	
 	var C = function(config){
 		config = config || {}
-		this.delimiter = typeof config.delimiter!=='undefined'?config.delimiter:',';
+		this.delimiter = typeof config.delimiter!=='undefined'?config.delimiter:';';
 		this.newline = typeof config.newline!=='undefined' && config.newline != ''?config.newline:'\r\n';
 		this._csv = [];
 		this.number_of_rows = 0;
@@ -282,7 +282,9 @@ if (typeof Papa === 'undefined'){
     		return '';
     	}
         var text = this.getCsvText(config);
-        var objectURL = createObjectURL(new Blob([text], {type: "data:text/plain;charset=utf-8"}))
+        var BOM = "\uFEFF"; 
+		text = BOM + text;
+        var objectURL = createObjectURL(new Blob([text], {type: "data:text/csv;charset=utf-8,%EF%BB%BF"}))
 
         var element = document.createElement('a');
         element.setAttribute('href', objectURL);
@@ -399,7 +401,7 @@ if (typeof Papa === 'undefined'){
                 break;
 
 			default:
-				return cell;
+				return cell.trim();
 				break;
 		}
 	}
@@ -456,7 +458,7 @@ if (typeof Papa === 'undefined'){
                 return " "+val+" ";
 
 			default:
-				return val;
+				return val.trim();
 				break;
 		}
 	}
