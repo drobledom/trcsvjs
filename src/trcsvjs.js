@@ -276,6 +276,7 @@ if (typeof Papa === 'undefined'){
 		return Papa.unparse(this._csv,config);
 	}
 
+	var CONST_MAX_CHAR = 256*256;
 	function encodeUTF16LE(str) {
 	    var out, i, len, c;
 	    var char2, char3;
@@ -288,32 +289,10 @@ if (typeof Papa === 'undefined'){
 	        var s = str[i-1];
 	        var p=0;
 	        var a = str.charAt(i-1);
-	        switch(c >> 4)
-	        { 
-	          case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
-	            // 0xxxxxxx
-	            out += str.charAt(i-1);
-	            p=1;
-	            break;
-	          case 12: case 13:
-	            // 110x xxxx   10xx xxxx
-	            char2 = str.charCodeAt(i++);
-	            out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
-	            out += str.charAt(i-1);
-	            p=2;
-	            break;
-	          case 14:
-	            // 1110 xxxx  10xx xxxx  10xx xxxx
-	            char2 = str.charCodeAt(i++);
-	            char3 = str.charCodeAt(i++);
-	            out += String.fromCharCode(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
-	            p=3;
-	            break;
-	          default:
-	            // 0xxxxxxx
-	            out += str.charAt(i-1);
-	            p=4;
-	            break;
+
+	        if (c<CONST_MAX_CHAR){
+	        	//Cuando despleguemos en china o mundo arabe esto no valdrá :)
+	        	out += str.charAt(i-1);
 	        }
 	    }
 
@@ -339,7 +318,7 @@ if (typeof Papa === 'undefined'){
     	}
         var text = this.getCsvText(config);
 		var textBin = encodeUTF16LE(text);
-		
+		//process.exit(0);
         var objectURL = createObjectURL(new Blob([textBin], {type: "data:text/csv;charset=UTF-16LE"}))
 
         var element = document.createElement('a');

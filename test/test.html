@@ -23,15 +23,51 @@
 
 
 		//var a = [[1,2,3],["asdasd","adsds","ss"],["asdasd12","adsd32s","sasds"],["vbvb","trt","jh"],['España','Sácalo','¡Aquíª!']];
-		var a = [["WORDCONTROL","CONF_BUSSINES_LINES_V1","","","",""],
+		/*var a = [["WORDCONTROL","CONF_BUSSINES_LINES_V1","","","",""],
 				 ["","ESTE CSV DEBE SUBIRSE COMPLETO","","","",""],					
 				 ["Código","Linea de Negocio","Código","Linea de Producto","Nombre","Peso"],
-]
+				 ]*/
+
+
+		var spec = {
+"provider" :'',
+"code" :'',
+"name" :'',
+"address" :'',
+"province" :'',
+"city" :'',
+"latitude" :'fz',
+"longitude" :'fz',
+"zone_code" :'',
+"country" :'',
+"cat" :'',
+"cp" :'',
+"phone" :'',
+"lock" :'bz',
+"blacklist" :'bz',
+};
+
+		var obj = {
+			address:"Ctra General S/N",
+			cat:"",
+			city:"Soldeu",
+			code:"JP057625",
+			country:"Andorra",
+			cp:"AD100",
+			latitude:42.560149,
+			longitude:1.685232,
+			name:"Apartaments Turistics Glaç",
+			phone:"",
+			provider:"ntincoming2",
+			province:"",
+			zone_code:"AD"
+		}
 		var csv = Trcsvjs.getEmptyCsv();
-		for(var r in a){
+		csv.insertRowFromObj(obj,spec);
+		/*for(var r in a){
 			var row = a[r];
 			csv.insertRow(row);
-		}
+		}*/
 		csv.browseCsv('prueba');
 	</script>
 </html>
