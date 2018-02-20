@@ -407,7 +407,7 @@ if (typeof Papa === 'undefined'){
 	 * Convert cell value from csv to object value
 	 */
 	function _decodCellToVal(cell,valSpec){
-        var omitEmpty = ['dz','fz','sc'];
+        var omitEmpty = ['dz','fz','sc','bz'];
         if (cell == '' && omitEmpty.indexOf(valSpec)<0){
             return cell;
         }		
@@ -466,8 +466,8 @@ if (typeof Papa === 'undefined'){
 	 * Val from object convert to cell to add to csv
 	 */
 	function _decodValToCell(val,valSpec){
-        var omitEmpty = ['dz','fz','sc'];
-        if (val == '' && omitEmpty.indexOf(valSpec<0)){
+        var omitEmpty = ['dz','fz','sc','bz'];
+        if (val == '' && omitEmpty.indexOf(valSpec)<0){
             return val;
         }		
 		switch(valSpec){
@@ -490,6 +490,7 @@ if (typeof Papa === 'undefined'){
 
             //Boolean
             case 'b':
+            case 'bz':
             	return val?'1':'0';
                 break;
 
