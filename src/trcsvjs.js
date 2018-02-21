@@ -67,6 +67,9 @@ if (typeof Papa === 'undefined'){
 		}
 		config = config || {}
 
+		config.delimiter = typeof config.delimiter!=='undefined'?config.delimiter:';';
+		config.encoding = typeof config.encoding!=='undefined'?config.encoding:"ISO-8859-1";
+
 		config.complete = function(results,file){
 			if (results.errors.length>0){
 				return callback(results.errors);
@@ -75,12 +78,24 @@ if (typeof Papa === 'undefined'){
 				delimiter : results.meta.delimiter,
 				newline    : results.meta.linebreak,
 			}
+
+			if (config.encoding == 'ISO-8859-1'){
+				var iLen = results.data.length;
+				for(var i=0; i<iLen;i++){
+					var jLen = results.data[i].length;
+					for(var j=0; j<jLen;j++){
+						results.data[i][j] = results.data[i][j].toString('utf-8');
+					}
+				}
+			}
+
 			var newcsv = new C(conf);
 			newcsv.initCsvFromArray(results.data);
 			callback(null,newcsv);
 		}
 		Papa.parse(csvString,config)
 	}
+
 
 	/**
 	 * This function create and return an empty trcsv object 
