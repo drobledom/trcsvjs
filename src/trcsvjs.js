@@ -451,7 +451,14 @@ if (typeof Papa === 'undefined'){
                 break;
 
 			default:
-				return cell.trim();
+				if (typeof cell === 'string'){
+					return cell.trim();
+				}else if (typeof cell === 'number'){
+					return cell;
+				} else {
+					return '';
+				}
+
 				break;
 		}
 	}
@@ -509,7 +516,14 @@ if (typeof Papa === 'undefined'){
                 return " "+val+" ";
 
 			default:
-				return val.trim();
+				if (typeof val === 'string'){
+					return val.trim();
+				}else if (typeof val === 'number'){
+					return val;
+				} else {
+					return '';
+				}
+				
 				break;
 		}
 	}
