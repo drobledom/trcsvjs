@@ -368,7 +368,11 @@ if (typeof Papa === 'undefined'){
 				obj[f] = {};
 				r = _recursiveRowToObj(row,r,obj[f],valSpec,rowlen);
 			} else {
-				obj[f] = _decodCellToVal(row[r],valSpec);
+				try{
+					obj[f] = _decodCellToVal(row[r],valSpec);
+				} catch(e){
+					obj[f] = '';
+				}
 				r++;
 			}
 			
@@ -391,7 +395,12 @@ if (typeof Papa === 'undefined'){
 				if (typeof obj[f] == 'undefined'){
 					row.push('');
 				} else {
-					row.push(_decodValToCell(obj[f],valSpec))
+					try{ 
+						var val = _decodValToCell(obj[f],valSpec);
+					} catch(e){
+						var val = '';
+					}
+					row.push(val);
 				}
 			}
 		}
