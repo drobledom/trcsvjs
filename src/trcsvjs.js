@@ -10,7 +10,7 @@ if (typeof Papa === 'undefined'){
 	var Papa = require('papaparse');
 }
 
-(function(root, Papa, factory)
+(function (root, Papa, factory)
 {
 	if (typeof define === 'function' && define.amd)
 	{
@@ -29,11 +29,16 @@ if (typeof Papa === 'undefined'){
 		// Browser globals (root is window)
 		root.Trcsvjs = factory(Papa,false);
 	}
-}(this, Papa, function(Papa,isNode)
+}(this, Papa, (Papa,isNode) =>
 {
 	'use strict';
 
-	var global = (function () {
+	//papa
+	if (typeof Papa === 'undefined') {
+		var Papa = require('papaparse');
+	}
+
+	var global = (() => {
 		// alternative method, similar to `Function('return this')()`
 		// but without using `eval` (which is disabled when
 		// using Content Security Policy).
@@ -70,7 +75,7 @@ if (typeof Papa === 'undefined'){
 		config.delimiter = typeof config.delimiter!=='undefined'?config.delimiter:';';
 		config.encoding = typeof config.encoding!=='undefined'?config.encoding:"ISO-8859-1";
 
-		config.complete = function(results,file){
+		config.complete = (results,file) => {
 			if (results.errors.length>0){
 				return callback(results.errors);
 			}
@@ -133,7 +138,7 @@ if (typeof Papa === 'undefined'){
 	 * ################# THE CSV OBJECT ######################
 	 * #######################################################
 	 */	
-	var C = function(config){
+	var C = (config) => {
 		config = config || {}
 		this.delimiter = typeof config.delimiter!=='undefined'?config.delimiter:';';
 		this.newline = typeof config.newline!=='undefined' && config.newline != ''?config.newline:'\r\n';
@@ -146,7 +151,7 @@ if (typeof Papa === 'undefined'){
 	/**
 	 * Init csv data 
 	 */
-	C.prototype.initCsvFromArray = function(obj){
+	C.prototype.initCsvFromArray = (obj) => {
 		this._csv = obj;
 		this.number_of_rows = obj.length;
 	};
@@ -155,7 +160,7 @@ if (typeof Papa === 'undefined'){
 	 * return array with row N.
 	 * From 1 to number_of_rows 
 	 */
-	C.prototype.getRow = function(n,emptyspec){
+	C.prototype.getRow = (n,emptyspec) => {
 		if (n>this.number_of_rows || n<=0){
 			return emptyspec;
 		}
@@ -166,7 +171,7 @@ if (typeof Papa === 'undefined'){
 	 * return array with row N and col C
 	 * From 1 to number_of_rows 
 	 */
-	C.prototype.getCell = function(n, c, emptyspec){
+	C.prototype.getCell = (n, c, emptyspec) => {
 		if (n>this.number_of_rows || n<=0 || c>this._csv[n-1].length || c<=0){
 			return emptyspec;
 		}
@@ -177,7 +182,7 @@ if (typeof Papa === 'undefined'){
      * This function return an object with objectspec from row. Accept
      * subfields. From 1 to number_of_rows
      */
-	C.prototype.getObjFromRow = function(n,objspec,emptyspec){
+	C.prototype.getObjFromRow = (n,objspec,emptyspec) => {
 		if (n>this.number_of_rows || n<=0){
 			return {};
 		}
@@ -196,7 +201,7 @@ if (typeof Papa === 'undefined'){
 	/**
 	 * This function convert ob in row array using specs
 	 */
-	C.prototype.getRowFromObj = function(obj,objspec,emptyspec){
+	C.prototype.getRowFromObj = (obj,objspec,emptyspec) => {
 		if (typeof objspec === 'undefined'){
 			objspec = this.objspec;
 		}
@@ -211,7 +216,7 @@ if (typeof Papa === 'undefined'){
 	/**
 	 * Insert a row at the end of csv
 	 */
-	C.prototype.insertRow = function(row){
+	C.prototype.insertRow = (row) => {
 		this._csv.push(row);
 		this.number_of_rows++;
 	}
@@ -221,7 +226,7 @@ if (typeof Papa === 'undefined'){
 	 * doesn't exists (csv smaller than position required) function will create empty rows until
 	 * position is in array.
 	 */
-	C.prototype.insertRowInPos = function(row,pos){
+	C.prototype.insertRowInPos = (row,pos) => {
 		if (pos<=this.number_of_rows){
 			this._csv[pos-1] = row;
 		} else {
@@ -236,7 +241,7 @@ if (typeof Papa === 'undefined'){
 	 * Set value of cell in row N and col C
 	 * From 1 to number_of_rows 
 	 */
-	C.prototype.setCell = function(n, c, value, emptyspec){
+	C.prototype.setCell = (n, c, value, emptyspec) => {
 		if (n<=0 || c<=0){
 			return;
 		}
@@ -254,7 +259,7 @@ if (typeof Papa === 'undefined'){
 	/**
 	 * Convert an object in a row array and insert it at the end of csv
 	 */
-	C.prototype.insertRowFromObj = function(obj,objspec,emptyspec){
+	C.prototype.insertRowFromObj = (obj,objspec,emptyspec) => {
 		this._csv.push(this.getRowFromObj(obj,objspec,emptyspec));
 		this.number_of_rows++;
 	}
@@ -264,7 +269,7 @@ if (typeof Papa === 'undefined'){
 	 * doesn't exists (csv smaller than position required) function will create empty rows until
 	 * position is in array.
 	 */
-	C.prototype.insertRowInPosFromObj = function(obj,pos,objspec,emptyspec){
+	C.prototype.insertRowInPosFromObj = (obj,pos,objspec,emptyspec) => {
 		if (pos<=this.number_of_rows){
 			this._csv[pos-1] = this.getRowFromObj(obj,objspec,emptyspec);
 		} else {
@@ -278,7 +283,7 @@ if (typeof Papa === 'undefined'){
 	/**
 	 * Return actual csv content as string text using unparse of papaparse
 	 */
-	C.prototype.getCsvText = function(config){
+	C.prototype.getCsvText = (config) => {
 		config = config || {};
 		if (typeof config.delimiter === 'undefined'){
 			config.delimiter = this.delimiter;
@@ -327,7 +332,7 @@ if (typeof Papa === 'undefined'){
 	/**
      * Get actual csv content, creates a local file directly in browser and download it.
      */
-    C.prototype.browseCsv = function(filename,config){
+    C.prototype.browseCsv = (filename,config) => {
     	if (isNode){
     		return '';
     	}
